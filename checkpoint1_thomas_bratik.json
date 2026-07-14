@@ -1,0 +1,177 @@
+{
+  "name": "checkpoint1_thomas_bratik",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        0,
+        0
+      ],
+      "id": "adb33397-a37a-4452-bd49-d99384fa5531",
+      "name": "When chat message received",
+      "webhookId": "03656e96-cb63-475c-a57a-6e0074e19203"
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "# ROL CORPORATIVO\nEres el Asistente Experto en Automatización y Estructuración de Datos. Operas como un Agente de IA especializado en la orquestación e interacción autónoma con el entorno de Google Sheets en n8n. Tu tono de comunicación es estrictamente analítico, preciso y formal.\n\n# ÁMBITO Y OBJETIVOS COMERCIALES\n1. Interpretar las solicitudes de datos desestructuradas del usuario mediante el chat para estructurarlas en matrices de información lógicas.\n2. Identificar dinámicamente el NOMBRE DEL DOCUMENTO y el NOMBRE DE LA HOJA (SHEET) que el usuario especifique en su mensaje de chat.\n3. Crear, estructurar y poblar de manera autónoma hojas de cálculo que sirvan para el control financiero, inventarios o KPI organizacionales.\n\n# PROTOCOLO DE EXTRACCIÓN Y ESTRUCTURACIÓN DE DATOS (CRÍTICO)\n1. **Detección Dinámica de Destinos (OBLIGATORIO):**\n   - Analiza el mensaje del usuario para identificar el nombre que desea para el archivo de Google Sheets (Document) y el nombre para la pestaña (Sheet). \n   - *Ejemplo:* Si el usuario dice \"creame una planilla llamada Gastos 2026 con la hoja Gastos julio...\", debes extraer:\n     * Document/Title: \"Gastos 2026\"\n     * Sheet: \"Gastos julio\"\n   - Si el usuario no especifica un nombre de documento u hoja, utiliza valores lógicos por defecto basados en el contexto (ej. \"Gastos del mes\" y \"Hoja 1\") o solicítale amablemente que los defina.\n\n2. **Procesamiento de Filas:**\n   - Al recibir una solicitud para registrar datos (ej. \"3 computadoras, 1 generador...\"), DEBES desglosar e identificar cada elemento de manera individual.\n   - Está terminantemente prohibido insertar el mensaje de chat original del usuario (`chatInput`) o metadatos del flujo (`sessionId`, `action`, `toolCallId`) dentro de las columnas de contenido de la planilla.\n\n3. **Estructura de Tabla Limpia:**\n   - Define las columnas lógicas necesarias estrictamente basadas en los datos solicitados (ej. \"Producto\", \"Cantidad\", \"Precio\").\n   - Invoca la herramienta de Google Sheets enviando única y exclusivamente los valores procesados para cada columna, fila por fila. No inventes columnas para metadatos del sistema.",
+          "maxIterations": 10
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        208,
+        0
+      ],
+      "id": "e931f00e-68db-42de-ad57-255280b51131",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o",
+          "mode": "list",
+          "cachedResultName": "gpt-4o"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        208,
+        224
+      ],
+      "id": "b2e536a1-1a85-4f2e-b889-cd683d61ec23",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "RM4GgR8TROfzTpXj",
+          "name": "OpenAI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "thomasbratik83@gmail.com",
+        "subject": "Generación de plantillas de Google Sheet exitosa",
+        "message": "={{ $json.output }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        448,
+        -256
+      ],
+      "id": "2a1dd977-9b80-4567-9212-e119f1e54f34",
+      "name": "Send a message",
+      "webhookId": "99ceaa2a-b90d-4904-9fd9-a94e6f496cac",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "TtX8Pg7oiLHeG4WF",
+          "name": "Gmail OAuth2 API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "Esta herramienta permite la creación, edición, lectura y estructuración de documentos y tablas de datos dentro del entorno corporativo de Google Sheets. Debe ser activada de manera autónoma por el agente única y exclusivamente cuando el mensaje del usuario contenga una intención clara de: crear una nueva hoja de cálculo, armar una tabla desde cero, estructurar listas de información, generar reportes financieros, asentar registros de inventario, o escribir filas y columnas de datos. El modelo de IA debe analizar el texto desestructurado enviado por el usuario en el chat, extraer los encabezados y las filas implícitas de la solicitud, y decidir invocar esta herramienta pasando los parámetros estructurados correspondientes de forma probabilística, eliminando la necesidad de que el usuario especifique comandos rígidos o instrucciones técnicas secuenciales. No se debe invocar esta herramienta para consultas informativas generales o saludos que no requieran persistencia de datos en una planilla.",
+        "resource": "spreadsheet",
+        "title": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Title', ``, 'string') }}",
+        "sheetsUi": {
+          "sheetValues": [
+            {
+              "title": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('sheetValues0_Title', ``, 'string') }}"
+            }
+          ]
+        },
+        "options": {
+          "locale": "es_AR"
+        }
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        352,
+        208
+      ],
+      "id": "976091e3-5089-4775-b4a0-a2ceeade307a",
+      "name": "Create spreadsheet in Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "UVjxhZmx7dcrGHVF",
+          "name": "Google Sheets OAuth2 API"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create spreadsheet in Google Sheets": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "b36f3b2f-3607-48e0-a58e-ed91a4fb5c2e",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "dff9353269d587aac83093eba8839481bbf1728901ccd494c4a86d99d925f435"
+  },
+  "nodeGroups": [],
+  "id": "Gs2zF2QGSW3O5i67",
+  "tags": []
+}
